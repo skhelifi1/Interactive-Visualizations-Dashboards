@@ -1,1 +1,1 @@
-# Interactive-Vizualisations-Dashboards
+# Interactive-Visualizations-Dashboards
