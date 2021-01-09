@@ -14,7 +14,7 @@ function changeGraph(name) {
     
     d3.json("data/samples.json").then(readData => {
         var sampleData = readData.samples;
-        filteredData = sampleData.filter(object => object.id == name);
+        //filteredData = sampleData.filter(object => object.id == name);
         // console.log(sampleData);
         var sampleV = readData.samples.map(object => object.sample_values)[0];
         // console.log (sampleV)
@@ -38,7 +38,16 @@ function changeGraph(name) {
             //     return demoInfoContent;
             // };
         });
-
+        // var filteredData = readData.metadata.map(object => {
+        //     if (object.id == name) {
+        //         var washFreq = object.wfreq};
+        //         console.log(washFreq)
+            // });
+        var filteredData = readData.metadata.map(object => object.wfreq);
+                //     if (object.id == name) {
+                //         var washFreq = object.wfreq};
+                //         console.log(washFreq)
+        
 
         // console.log(sampleValues)
         // console.log(bacteriaId)
@@ -59,11 +68,7 @@ function changeGraph(name) {
             automargin: true      
         };
         Plotly.newPlot("bar", data, layout);
-    // Use otu_ids for the x values.
-    // Use sample_values for the y values.
-    // Use sample_values for the marker size.
-    // Use otu_ids for the marker colors.
-    // Use otu_labels for the text values.
+    
         let trace2 = {
             x: otu_ids,
             y: sampleV,
@@ -74,7 +79,6 @@ function changeGraph(name) {
                 color: otu_ids,
                 colorscale:"Electric"
             }
-            
         };
         let bubbleData= [trace2];
         let layout2 = {
@@ -84,6 +88,34 @@ function changeGraph(name) {
             automargin: true
         };
         Plotly.newPlot("bubble", bubbleData, layout2);
+
+        var washingData = [
+            {
+                domain: { x: [0, 1], y: [0, 1] },
+                value: filteredData,
+                title: { text: "Belly Button Washing Frequency: Scrubs per Week" },
+                type: "indicator",
+                mode: "gauge+number",
+                gauge: {
+                    axis: { range :[null, 10]},
+                    steps: [
+                        {range: [0, 1], color: "#00429d"},
+                        {range: [1, 2], color: "#2e59a8"},
+                        {range: [2, 3], color: "#4771b2"},
+                        {range: [3, 4], color: "#5d8abd"},
+                        {range: [4, 5], color: "#73a2c6"},
+                        {range: [5, 6], color: "#8abccf"},
+                        {range: [6, 7], color: "#a5d5d8"},
+                        {range: [7, 8], color: "#c5eddf"},
+                        {range: [8, 9], color: "#ffffe0"}                            
+                    ]
+                }
+            }
+        ];
+        
+        var washLayout = { width: 600, height: 500, color: "Electric", margin: { t: 0, b: 0 } };
+        Plotly.newPlot("gauge", washingData, washLayout);
+        
     }).catch(err => console.log(err));
 }
 
