@@ -12,7 +12,7 @@ init()
 function changeGraph() {
     // Assign the value of the dropdown menu option to a variable
     let name = dropdownMenu.property("value");
-
+    
     d3.json("data/samples.json").then(readData => {
         let sampleData = readData.samples;
         sampleData.filter(object => object.id == name);
@@ -28,6 +28,20 @@ function changeGraph() {
         // console.log(bacteriaId);
         let slicedBacteriaId = bacteriaId.map(object => object.slice(0, 11));
         // console.log(slicedBacteriaId);
+        let demoInfo = d3.select("#sample-metadata");
+        demoInfo.html("");
+        let subjectInfo = readData.metadata[0];
+        // console.log(subjectInfo);
+        Object.entries(subjectInfo).forEach(([key, value]) => { 
+            demoInfo.append("br").text(`${key} : ${value}`);
+            // if (subjectInfo) {
+            //     let demoInfoContent = subjectInfo.filter(object => object[key] === subjectInfo);
+            //     // console.log(demoInfoContent);
+            //     return demoInfoContent;
+            // };
+        });
+
+
 
 
         //Make graph
@@ -43,9 +57,9 @@ function changeGraph() {
         let layout = {
             title: "Top 10 Bacteria Found",
             margin: {
-                l: 200,
-                r: 200,
-                t: 400,
+                l: 100,
+                r: 300,
+                t: 200,
                 b: 600,
             }
         };
@@ -60,6 +74,7 @@ function init() {
         let id= data.names
         id.forEach(names => {
             dropdownMenu.append("option").text(names).property("value", names);
+            
         });
     });
 
