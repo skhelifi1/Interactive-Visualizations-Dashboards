@@ -16,10 +16,16 @@ function changeGraph(name) {
         var sampleData = readData.samples;
         filteredData = sampleData.filter(object => object.id == name);
         // console.log(sampleData);
+        var sampleV = readData.samples.map(object => object.sample_values)[0];
+        // console.log (sampleV)
         var sampleValues = readData.samples.map(object => object.sample_values).sort((a,b) => a-b)[0].slice(0, 10);
+        var otu_ids = sampleData.map(object => object.otu_ids)[0];
+        // console.log (otu_ids)
         var bacteriaId = sampleData.map(object => object.otu_ids).sort((a,b) => a-b)[0].slice(0, 10);
         var bacteriaLabels = sampleData.map(object => object.otu_labels).sort((a,b) => a-b)[0].slice(0, 10);
         // console.log(bacteriaId);
+        var bacteriaLabelsAll = sampleData.map(object => object.otu_labels)[0];
+        //console.log(bacteriaLabelsAll)
         var demoInfo = d3.select("#sample-metadata");
         demoInfo.html("");
         var subjectInfo = readData.metadata.filter(object => object.id == name)[0];
@@ -39,13 +45,13 @@ function changeGraph(name) {
         // console.log(bacteriaLabels)
 
         //Make graph
-            let trace1 = {
-            x: sampleValues,
-            y: bacteriaId.map(num => `OTU ${num}`),
-            text: bacteriaId,
-            name: "Top 10 Bacteria Found", 
-            type: "bar",
-            orientation:"h"
+        let trace1 = {
+        x: sampleValues,
+        y: bacteriaId.map(num => `OTU ${num}`),
+        text: bacteriaLabels,
+        name: "Top 10 Bacteria Found", 
+        type: "bar",
+        orientation:"h"
         };
         let data= [trace1];
         let layout = {
@@ -53,6 +59,31 @@ function changeGraph(name) {
             automargin: true      
         };
         Plotly.newPlot("bar", data, layout);
+    // Use otu_ids for the x values.
+    // Use sample_values for the y values.
+    // Use sample_values for the marker size.
+    // Use otu_ids for the marker colors.
+    // Use otu_labels for the text values.
+        let trace2 = {
+            x: otu_ids,
+            y: sampleV,
+            text: bacteriaLabelsAll,
+            mode: 'markers',
+            marker: {
+                size: sampleV,
+                color: otu_ids,
+                colorscale:"Electric"
+            }
+            
+        };
+        let bubbleData= [trace2];
+        let layout2 = {
+            title: 'Total number of Bacteria per Person',
+            showlegend: true,
+            xaxis: {title:"OTU ID"},
+            automargin: true
+        };
+        Plotly.newPlot("bubble", bubbleData, layout2);
     }).catch(err => console.log(err));
 }
 
