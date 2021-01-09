@@ -6,34 +6,26 @@
 var dropdownMenu = d3.select("#selDataset");
 
 // On change to the DOM, call changeData()
-d3.selectAll("#selDataset").on("change", changeGraph);
-init()
+//d3.selectAll("#selDataset").on("change", changeGraph);
 // Function called by DOM changes
-function changeGraph() {
+function changeGraph(name) {
     // Assign the value of the dropdown menu option to a variable
-    let name = dropdownMenu.property("value");
+    // let name = dropdownMenu.property("value");
     
     d3.json("data/samples.json").then(readData => {
-        let sampleData = readData.samples;
-        sampleData.filter(object => object.id == name);
-        // console.log(id);
-        let sortedValues = readData.samples.map(object => object.sample_values).sort((a,b) => a-b);
-        // console.log(sortedValues);
-        // .forEach(name => name.sample_values.sort((a,b) => a-b));
-        let slicedValues = sortedValues.map(object => object.slice(0, 11));
-        // console.log(slicedValues);
-        let sortedData = readData.samples.sort((a,b) => a-b);
-        // console.log(sortedData);
-        let bacteriaId = sortedData.map(object => object.otu_ids);
+        var sampleData = readData.samples;
+        filteredData = sampleData.filter(object => object.id == name);
+        // console.log(sampleData);
+        var sampleValues = readData.samples.map(object => object.sample_values).sort((a,b) => a-b)[0].slice(0, 10);
+        var bacteriaId = sampleData.map(object => object.otu_ids).sort((a,b) => a-b)[0].slice(0, 10);
+        var bacteriaLabels = sampleData.map(object => object.otu_labels).sort((a,b) => a-b)[0].slice(0, 10);
         // console.log(bacteriaId);
-        let slicedBacteriaId = bacteriaId.map(object => object.slice(0, 11));
-        // console.log(slicedBacteriaId);
-        let demoInfo = d3.select("#sample-metadata");
+        var demoInfo = d3.select("#sample-metadata");
         demoInfo.html("");
-        let subjectInfo = readData.metadata[0];
+        var subjectInfo = readData.metadata.filter(object => object.id == name)[0];
         // console.log(subjectInfo);
         Object.entries(subjectInfo).forEach(([key, value]) => { 
-            demoInfo.append("br").text(`${key} : ${value}`);
+            demoInfo.append("h5").text(`${key} : ${value}`);
             // if (subjectInfo) {
             //     let demoInfoContent = subjectInfo.filter(object => object[key] === subjectInfo);
             //     // console.log(demoInfoContent);
@@ -42,13 +34,15 @@ function changeGraph() {
         });
 
 
-
+        // console.log(sampleValues)
+        // console.log(bacteriaId)
+        // console.log(bacteriaLabels)
 
         //Make graph
-        let trace1 = {
-            x: slicedValues,
-            y: slicedBacteriaId,
-            text: slicedBacteriaId,
+            let trace1 = {
+            x: sampleValues,
+            y: bacteriaId.map(num => `OTU ${num}`),
+            text: bacteriaId,
             name: "Top 10 Bacteria Found", 
             type: "bar",
             orientation:"h"
@@ -56,12 +50,7 @@ function changeGraph() {
         let data= [trace1];
         let layout = {
             title: "Top 10 Bacteria Found",
-            margin: {
-                l: 100,
-                r: 300,
-                t: 200,
-                b: 600,
-            }
+            automargin: true      
         };
         Plotly.newPlot("bar", data, layout);
     }).catch(err => console.log(err));
@@ -78,6 +67,7 @@ function init() {
         });
     });
 
-    changeGraph();
+    changeGraph(940);
 
 }
+init()
