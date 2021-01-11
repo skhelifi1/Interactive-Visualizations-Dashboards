@@ -11,6 +11,7 @@ var dropdownMenu = d3.select("#selDataset");
 function changeGraph(name) {
     // Assign the value of the dropdown menu option to a variable
     // let name = dropdownMenu.property("value");
+    //.sort((a,b) => a-b)
     //console.log(name)
 
     d3.json("data/samples.json").then(readData => {
@@ -19,16 +20,16 @@ function changeGraph(name) {
         //console.log(filteredData);
         var sampleV = filteredData.sample_values;
         //console.log (sampleV)
-        var sampleValues = sampleV.sort((a,b) => a-b).slice(0, 10);
+        var sampleValues = sampleV.slice(0, 10);
         //console.log(sampleValues)
         var otu_ids = filteredData.otu_ids;
         // console.log (otu_ids)
-        var bacteriaId = otu_ids.sort((a,b) => a-b).slice(0, 10);
+        var bacteriaId = otu_ids.slice(0, 10);
         var bacteriaLabelsAll = filteredData.otu_labels;
         //console.log(bacteriaLabelsAll)
-        var bacteriaLabels = bacteriaLabelsAll.sort((a,b) => a-b).slice(0, 10);
+        var bacteriaLabels = bacteriaLabelsAll.slice(0, 10);
         //console.log(bacteriaId);
-                var demoInfo = d3.select("#sample-metadata");
+        var demoInfo = d3.select("#sample-metadata");
         demoInfo.html("");
         var subjectInfo = readData.metadata.filter(object => object.id == name)[0];
         // console.log(subjectInfo);
@@ -42,11 +43,8 @@ function changeGraph(name) {
         //         console.log(washFreq)
             // });
         var filteredData = readData.metadata.map(object => object.wfreq);
-                //     if (object.id == name) {
-                //         var washFreq = object.wfreq};
-                //         console.log(washFreq)
+        //console.log(washFreq)
         
-
         // console.log(sampleValues)
         // console.log(bacteriaId)
         // console.log(bacteriaLabels)
