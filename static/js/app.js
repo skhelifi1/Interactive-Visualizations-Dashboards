@@ -11,32 +11,30 @@ var dropdownMenu = d3.select("#selDataset");
 function changeGraph(name) {
     // Assign the value of the dropdown menu option to a variable
     // let name = dropdownMenu.property("value");
-    
+    //console.log(name)
+
     d3.json("data/samples.json").then(readData => {
         var sampleData = readData.samples;
-        //filteredData = sampleData.filter(object => object.id == name);
-        // console.log(sampleData);
-        var sampleV = readData.samples.map(object => object.sample_values)[0];
-        // console.log (sampleV)
-        var sampleValues = readData.samples.map(object => object.sample_values).sort((a,b) => a-b)[0].slice(0, 10);
-        var otu_ids = sampleData.map(object => object.otu_ids)[0];
+        filteredData = sampleData.filter(object => object.id == name)[0];        
+        //console.log(filteredData);
+        var sampleV = filteredData.sample_values;
+        //console.log (sampleV)
+        var sampleValues = sampleV.sort((a,b) => a-b).slice(0, 10);
+        //console.log(sampleValues)
+        var otu_ids = filteredData.otu_ids;
         // console.log (otu_ids)
-        var bacteriaId = sampleData.map(object => object.otu_ids).sort((a,b) => a-b)[0].slice(0, 10);
-        var bacteriaLabels = sampleData.map(object => object.otu_labels).sort((a,b) => a-b)[0].slice(0, 10);
-        // console.log(bacteriaId);
-        var bacteriaLabelsAll = sampleData.map(object => object.otu_labels)[0];
+        var bacteriaId = otu_ids.sort((a,b) => a-b).slice(0, 10);
+        var bacteriaLabelsAll = filteredData.otu_labels;
         //console.log(bacteriaLabelsAll)
-        var demoInfo = d3.select("#sample-metadata");
+        var bacteriaLabels = bacteriaLabelsAll.sort((a,b) => a-b).slice(0, 10);
+        //console.log(bacteriaId);
+                var demoInfo = d3.select("#sample-metadata");
         demoInfo.html("");
         var subjectInfo = readData.metadata.filter(object => object.id == name)[0];
         // console.log(subjectInfo);
         Object.entries(subjectInfo).forEach(([key, value]) => { 
             demoInfo.append("h5").text(`${key} : ${value}`);
-            // if (subjectInfo) {
-            //     let demoInfoContent = subjectInfo.filter(object => object[key] === subjectInfo);
-            //     // console.log(demoInfoContent);
-            //     return demoInfoContent;
-            // };
+            
         });
         // var filteredData = readData.metadata.map(object => {
         //     if (object.id == name) {
@@ -83,7 +81,7 @@ function changeGraph(name) {
         let bubbleData= [trace2];
         let layout2 = {
             title: 'Total number of Bacteria per Person',
-            showlegend: true,
+            showlegend: false,
             xaxis: {title:"OTU ID"},
             automargin: true
         };
